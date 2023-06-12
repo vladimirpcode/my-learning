@@ -87,7 +87,6 @@ MAX_INT = 32000
 
 
 def init_scan():
-    print("init_scan()")
     next_lex()
 
 
