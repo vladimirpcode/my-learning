@@ -1,6 +1,12 @@
 import oscan
 import otext
 from oerror import *
+from enum import Enum
+
+
+class OType(Enum):
+    Int = 1
+    Bool = 2
 
 
 def compile():
@@ -65,3 +71,15 @@ def term():         # слагаемое
     while oscan.lex in [oscan.Lex.Mult, oscan.Lex.DIV, oscan.Lex.MOD]:
         oscan.next_lex()
         factor()    # множитель
+
+# ПростоеВыраж [Отношение ПростоеВыраж]
+def expression():
+    otype = simple_expr()
+    if oscan.lex in [oscan.Lex.EQ, oscan.Lex.NE, oscan.Lex.GT, oscan.Lex.GE, oscan.Lex.LT, oscan.Lex.LE]:
+        if otype != OType.Int:
+            error("несоответствие типу операнда")
+        oscan.next_lex()
+        otype = simple_expr()
+        if otype != OType.Int:
+            expected("выражение целого типа")
+        otype = OType.Bool
