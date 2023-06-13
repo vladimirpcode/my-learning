@@ -73,13 +73,27 @@ def term():         # слагаемое
         factor()    # множитель
 
 # ПростоеВыраж [Отношение ПростоеВыраж]
-def expression():
-    otype = simple_expr()
+def expression()->OType:
+    t = simple_expr()
     if oscan.lex in [oscan.Lex.EQ, oscan.Lex.NE, oscan.Lex.GT, oscan.Lex.GE, oscan.Lex.LT, oscan.Lex.LE]:
-        if otype != OType.Int:
+        if t != OType.Int:
             error("несоответствие типу операнда")
         oscan.next_lex()
-        otype = simple_expr()
-        if otype != OType.Int:
+        t = simple_expr()
+        if t != OType.Int:
             expected("выражение целого типа")
-        otype = OType.Bool
+        t = OType.Bool
+        
+# ["+"|"-"] Слагаемое {ОперСлож Слагаемое}
+def simple_expr()->OType:
+    if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
+        oscan.next_lex()
+        t = term()
+        if t != OType.Int:
+            expected("выражение целого типа")
+    else:
+        t = term()
+    if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
+        if t != OType.Int:
+            error("Несоответствие операции типу операнда")
+        # ToDo
