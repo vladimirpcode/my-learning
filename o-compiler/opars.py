@@ -67,10 +67,18 @@ def stat_seq():
 
 
 def term():         # слагаемое
-    factor()        # множитель
-    while oscan.lex in [oscan.Lex.Mult, oscan.Lex.DIV, oscan.Lex.MOD]:
-        oscan.next_lex()
-        factor()    # множитель
+    t = factor()        # множитель
+    if oscan.lex in [oscan.Lex.Mult, oscan.Lex.DIV, oscan.Lex.MOD]:
+        if t != OType.Int:
+            error("Несоответствие операции типу операнда")
+        stop_flag = False
+        while not stop_flag:
+            oscan.next_lex()
+            t = factor()
+            if t != OType.Int:
+                expected("выражение целого типа")
+            stop_flag = oscan.lex not in [oscan.Lex.Mult, oscan.Lex.DIV, oscan.Lex.MOD]
+    return t
 
 # ПростоеВыраж [Отношение ПростоеВыраж]
 def expression()->OType:
@@ -83,7 +91,8 @@ def expression()->OType:
         if t != OType.Int:
             expected("выражение целого типа")
         t = OType.Bool
-        
+
+
 # ["+"|"-"] Слагаемое {ОперСлож Слагаемое}
 def simple_expr()->OType:
     if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
@@ -96,4 +105,11 @@ def simple_expr()->OType:
     if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
         if t != OType.Int:
             error("Несоответствие операции типу операнда")
-        # ToDo
+        # repeat-until imitation
+        stop_flag = False
+        while not stop_flag:
+            oscan.next_lex()
+            t = term()
+            if t != OType.Int:
+                expected("выражение целого типа")
+            stop_flag = oscan.lex not in [oscan.Lex.Plus, oscan.Lex.Minus]
