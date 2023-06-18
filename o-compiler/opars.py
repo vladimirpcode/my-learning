@@ -5,7 +5,7 @@ import otable
 
 
 def compile():
-    otable.open_scope()     # блок стандартных имен
+    otable.open_scope()  # блок стандартных имен
     otable.enter("ABS", otable.Category.StandartProc, otable.OType.Int, otable.Function.ABS)
     otable.enter("MAX", otable.Category.StandartProc, otable.OType.Int, otable.Function.MAX)
     otable.enter("MIN", otable.Category.StandartProc, otable.OType.Int, otable.Function.MIN)
@@ -14,14 +14,14 @@ def compile():
     otable.enter("HALT", otable.Category.StandartProc, otable.OType.TypeNone, otable.Function.HALT)
     otable.enter("INC", otable.Category.StandartProc, otable.OType.TypeNone, otable.Function.INC)
     otable.enter("INTEGER", otable.Category.catType, otable.OType.Int, 0)
-    otable.open_scope()     # блок модуля
+    otable.open_scope()  # блок модуля
     module()
-    otable.close_scope()    # блок модуля
-    otable.close_scope()    # блок стандартных имен
+    otable.close_scope()  # блок модуля
+    otable.close_scope()  # блок стандартных имен
     print("\nКомпиляция завершена")
 
 
-def check(L:oscan.Lex, msg:str):
+def check(L: oscan.Lex, msg: str):
     if oscan.lex != L:
         expected(msg)
     else:
@@ -37,11 +37,11 @@ def module():
     oscan.next_lex()
     check(oscan.Lex.Semi, "';'")
     if oscan.lex == oscan.Lex.IMPORT:
-        parse_import()              # import занято
-    decl_seq()                      # последовательность объявлений
+        parse_import()  # import
+    decl_seq()  # последовательность объявлений
     if oscan.lex == oscan.Lex.BEGIN:
         oscan.next_lex()
-        stat_seq()                  # последовательность операторов
+        stat_seq()  # последовательность операторов
     check(oscan.Lex.END, "END")
     if oscan.lex != oscan.Lex.Name:
         expected("имя модуля")
@@ -86,7 +86,7 @@ def decl_seq():
                 const_decl()
                 check(oscan.Lex.Semim, "';'")
         else:
-            oscan.next_lex()        # VAR
+            oscan.next_lex()  # VAR
             while oscan.lex == oscan.Lex.Name:
                 var_decl()
                 check(oscan.Lex.Semi, "';'")
@@ -101,7 +101,54 @@ def const_decl():
     const_obj.category = otable.Category.Const
     otable.program_objects[-1] = const_obj
 
-# ToDo page 226
+
+# ["+" | "-"] (Число | Имя)
+def const_expr() -> int:
+    result_value = 0
+    program_obj = otable.ProgramObject()
+    op = oscan.Lex.Plus
+    if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
+        op = oscan.lex
+        oscan.next_lex()
+    if oscan.lex == oscan.Lex.Num:
+        result_value = oscan.num
+        oscan.next_lex()
+    elif oscan.lex == oscan.Lex.Name:
+        program_obj = otable.find(oscan.name)
+        if program_obj.category == otable.Category.Guard:
+            error("нельзя определять константу через себя")
+        elif program_obj.category != otable.Category.Const:
+            expected("имя константы")
+        else:
+            result_value = program_obj.value
+        oscan.next_lex()
+    else:
+        expected("константное выражение")
+    if op == oscan.Lex.Minus:
+        result_value = -result_value
+    return result_value
+
+
+def var_decl():
+    program_obj = otable.ProgramObject()
+    if oscan.lex != oscan.Lex.Name:
+        expected("Имя")
+    else:
+        program_obj = otable.new_name(oscan.name, otable.Category.Var)
+        program_obj.type = otable.OType.Int
+        otable.program_objects[-1] = program_obj
+        oscan.next_lex()
+    while oscan.lex == oscan.Lex.Comma:
+        oscan.next_lex()
+        if oscan.lex != oscan.Lex.Name:
+            expected("Имя")
+        else:
+            program_obj = otable.new_name(oscan.name, otable.Category.Var)
+            program_obj.type = otable.OType.Int
+            otable.program_objects[-1] = program_obj
+            oscan.next_lex()
+    check(oscan.Lex.Colon, "':'")
+    parse_type()
 
 
 def stat_seq():
@@ -112,13 +159,66 @@ def stat_seq():
 
 
 def statement():
-    X = otable.ProgramObject()
+    program_obj = otable.ProgramObject()
     if oscan.lex == oscan.Lex.Name:
-        X = otable.find(oscan.name)
+        program_obj = otable.find(oscan.name)
+        if program_obj.category == otable.Category.Module:
+            oscan.next_lex()
+            check(oscan.Lex.Dot, "'.'")
+            if oscan.lex == oscan.Lex.Name and len(program_obj.name) < oscan.MAX_NAME_LEN:
+                program_obj = otable.find(program_obj.name + "." + oscan.name)
+            else:
+                expected(f"имя из модуля {program_obj.name}")
+        elif program_obj.category == otable.Category.Var:
+            ass_statement()
+        elif program_obj.category == otable.Category.StandartProc and program_obj.type == otable.OType.TypeNone:
+            call_statement()
+        else:
+            expected("обозначение переменной или процедуры")
+    elif oscan.lex == oscan.Lex.IF:
+        if_statement()
+    elif oscan.lex == oscan.Lex.WHILE:
+        while_statement()
+
+# ПростоеВыраж [Отношение ПростоеВыраж]
+def expression() -> otable.OType:
+    t = simple_expr()
+    if oscan.lex in [oscan.Lex.EQ, oscan.Lex.NE, oscan.Lex.GT, oscan.Lex.GE, oscan.Lex.LT, oscan.Lex.LE]:
+        if t != otable.OType.Int:
+            error("несоответствие типу операнда")
+        oscan.next_lex()
+        t = simple_expr()
+        if t != otable.OType.Int:
+            expected("выражение целого типа")
+        t = otable.OType.Bool
+    return t
 
 
-def term()->otable.OType:         # слагаемое
-    t = factor()        # множитель
+# ["+"|"-"] Слагаемое {ОперСлож Слагаемое}
+def simple_expr() -> otable.OType:
+    if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
+        oscan.next_lex()
+        t = term()
+        if t != otable.OType.Int:
+            expected("выражение целого типа")
+    else:
+        t = term()
+    if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
+        if t != otable.OType.Int:
+            error("Несоответствие операции типу операнда")
+        # repeat-until imitation
+        stop_flag = False
+        while not stop_flag:
+            oscan.next_lex()
+            t = term()
+            if t != otable.OType.Int:
+                expected("выражение целого типа")
+            stop_flag = oscan.lex not in [oscan.Lex.Plus, oscan.Lex.Minus]
+    return t
+
+
+def term() -> otable.OType:  # слагаемое
+    t = factor()  # множитель
     if oscan.lex in [oscan.Lex.Mult, oscan.Lex.DIV, oscan.Lex.MOD]:
         if t != otable.OType.Int:
             error("Несоответствие операции типу операнда")
@@ -132,7 +232,7 @@ def term()->otable.OType:         # слагаемое
     return t
 
 
-def factor()->otable.OType:
+def factor() -> otable.OType:
     X = otable.ProgramObject()
     result_type = otable.OType.TypeNone
     if oscan.lex == oscan.Lex.Name:
@@ -160,38 +260,3 @@ def factor()->otable.OType:
     else:
         expected("имя, число или '('")
     return result_type
-
-# ПростоеВыраж [Отношение ПростоеВыраж]
-def expression()->otable.OType:
-    t = simple_expr()
-    if oscan.lex in [oscan.Lex.EQ, oscan.Lex.NE, oscan.Lex.GT, oscan.Lex.GE, oscan.Lex.LT, oscan.Lex.LE]:
-        if t != otable.OType.Int:
-            error("несоответствие типу операнда")
-        oscan.next_lex()
-        t = simple_expr()
-        if t != otable.OType.Int:
-            expected("выражение целого типа")
-        t = otable.OType.Bool
-    return t
-
-# ["+"|"-"] Слагаемое {ОперСлож Слагаемое}
-def simple_expr()->otable.OType:
-    if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
-        oscan.next_lex()
-        t = term()
-        if t != otable.OType.Int:
-            expected("выражение целого типа")
-    else:
-        t = term()
-    if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
-        if t != otable.OType.Int:
-            error("Несоответствие операции типу операнда")
-        # repeat-until imitation
-        stop_flag = False
-        while not stop_flag:
-            oscan.next_lex()
-            t = term()
-            if t != otable.OType.Int:
-                expected("выражение целого типа")
-            stop_flag = oscan.lex not in [oscan.Lex.Plus, oscan.Lex.Minus]
-    return t
