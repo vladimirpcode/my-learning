@@ -26,9 +26,9 @@ def next_ch():
         line += 1
 
 
-def reset_text():
+def reset_text(filename):
     global textdata
-    f = open("primes.o", "r")
+    f = open(filename, "r")
     textdata = f.read()
     f.close()
     next_ch()

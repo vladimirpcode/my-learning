@@ -2,6 +2,7 @@ import oscan
 import otext
 from oerror import *
 import otable
+import ogen
 
 
 def compile():
@@ -233,25 +234,29 @@ def term() -> otable.OType:  # слагаемое
 
 
 def factor() -> otable.OType:
-    X = otable.ProgramObject()
+    program_obj = otable.ProgramObject()
     result_type = otable.OType.TypeNone
     if oscan.lex == oscan.Lex.Name:
-        X = otable.find(oscan.name)
-        if X.category == otable.Category.Var:
-            result_type = X.type
+        program_obj = otable.find(oscan.name)
+        if program_obj.category == otable.Category.Var:
+            ogen.gen_addr(program_obj)
+            ogen.gen(ogen.Command.Load)
+            result_type = program_obj.type
             oscan.next_lex()
-        elif X.category == otable.Category.Const:
-            result_type = X.type
+        elif program_obj.category == otable.Category.Const:
+            ogen.gen_const(program_obj.value)
+            result_type = program_obj.type
             oscan.next_lex()
-        elif X.category == otable.Category.StandartProc and X.type != otable.OType.TypeNone:
+        elif program_obj.category == otable.Category.StandartProc and program_obj.type != otable.OType.TypeNone:
             oscan.next_lex()
             check(oscan.Lex.LPar, "'('")
-            result_type = standartFunc(X.value)
+            result_type = standartFunc(program_obj.value)
             check(oscan.Lex.RPar, "')'")
         else:
             expected("переменная, константа или процедура-функция")
     elif oscan.lex == oscan.Lex.Num:
         result_type = otable.OType.Int
+        ogen.gen_const(oscan.num)
         oscan.next_lex()
     elif oscan.lex == oscan.Lex.LPar:
         oscan.next_lex()

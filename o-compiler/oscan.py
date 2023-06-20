@@ -87,6 +87,14 @@ MAX_INT = 32000
 
 
 def init_scan():
+    global lex
+    global name
+    global num
+    global lex_pos
+    lex = Lex.lexNone
+    name = ""
+    num = 0  # значение числовых литералов
+    lex_pos = 0
     next_lex()
 
 
