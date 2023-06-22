@@ -30,7 +30,10 @@ MEM_SIZE = 8 * 1024
 
 memory = [0] * MEM_SIZE
 
+
 def run():
+    global memory
+    global MEM_SIZE
     SP = MEM_SIZE   # стек пуст
     PC = 0
     cmd = memory[PC]

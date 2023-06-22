@@ -12,5 +12,5 @@ def init():
 
 print("O-compiler")
 init()
-opars.compile()
+opars.compile_o()
 ovm.run()

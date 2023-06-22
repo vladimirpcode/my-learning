@@ -5,7 +5,7 @@ import otable
 import ogen
 
 
-def compile():
+def compile_o():
     otable.open_scope()  # блок стандартных имен
     otable.enter("ABS", otable.Category.StandartProc, otable.OType.Int, otable.Function.ABS)
     otable.enter("MAX", otable.Category.StandartProc, otable.OType.Int, otable.Function.MAX)
@@ -250,7 +250,7 @@ def factor() -> otable.OType:
         elif program_obj.category == otable.Category.StandartProc and program_obj.type != otable.OType.TypeNone:
             oscan.next_lex()
             check(oscan.Lex.LPar, "'('")
-            result_type = standartFunc(program_obj.value)
+            result_type = standart_func(program_obj.value)
             check(oscan.Lex.RPar, "')'")
         else:
             expected("переменная, константа или процедура-функция")
@@ -265,3 +265,39 @@ def factor() -> otable.OType:
     else:
         expected("имя, число или '('")
     return result_type
+
+
+def int_expressipon():
+    result_type = expression()
+    if result_type != otable.OType.Int:
+        expected("выражение целого типа")
+
+
+def bool_expression():
+    result_type = expression()
+    if result_type != otable.OType.Bool:
+        expected("логическое выражение")
+
+
+def standart_func(value:otable.Function)->otable.OType:
+    result_type = otable.OType.TypeNone
+    match value:
+        case otable.Function.ABS:
+            int_expressipon()
+            ogen.gen_abs()
+            result_type = otable.OType.Int
+        case otable.Function.MAX:
+            parse_type()
+            ogen.gen(oscan.MAX_INT)
+            result_type = otable.OType.Int
+        case otable.Function.MIN:
+            parse_type()
+            ogen.gen_min()
+            result_type = otable.OType.Int
+        case otable.Function.ODD:
+            int_expressipon()
+            ogen.gen_odd
+            result_type = otable.OType.Bool
+    return result_type
+
+
