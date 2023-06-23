@@ -3,6 +3,7 @@ import otext
 from oerror import *
 import otable
 import ogen
+import ovm
 
 
 def compile_o():
@@ -197,11 +198,15 @@ def expression() -> otable.OType:
 
 # ["+"|"-"] Слагаемое {ОперСлож Слагаемое}
 def simple_expr() -> otable.OType:
+    operation = oscan.Lex.lexNone
     if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
+        operation = oscan.lex
         oscan.next_lex()
         t = term()
         if t != otable.OType.Int:
             expected("выражение целого типа")
+        if operation == oscan.Lex.Minus:
+            ogen.gen(ovm.Command.Neg)
     else:
         t = term()
     if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
@@ -210,25 +215,35 @@ def simple_expr() -> otable.OType:
         # repeat-until imitation
         stop_flag = False
         while not stop_flag:
+            operation = oscan.lex
             oscan.next_lex()
             t = term()
             if t != otable.OType.Int:
                 expected("выражение целого типа")
+            match operation:
+                case oscan.Lex.Plus: ogen.gen(ovm.Command.Add)
+                case oscan.Lex.Minus: ogen.gen(ovm.Command.Sub)
             stop_flag = oscan.lex not in [oscan.Lex.Plus, oscan.Lex.Minus]
     return t
 
 
 def term() -> otable.OType:  # слагаемое
     t = factor()  # множитель
+    operation = oscan.Lex.lexNone
     if oscan.lex in [oscan.Lex.Mult, oscan.Lex.DIV, oscan.Lex.MOD]:
         if t != otable.OType.Int:
             error("Несоответствие операции типу операнда")
         stop_flag = False
         while not stop_flag:
+            operation = oscan.lex
             oscan.next_lex()
             t = factor()
             if t != otable.OType.Int:
                 expected("выражение целого типа")
+            match operation:
+                case oscan.Lex.Mult: ogen.gen(ovm.Command.Mult)
+                case oscan.Lex.DIV: ogen.gen(ovm.Command.DIV)
+                case oscan.Lex.MOD: ogen.gen(ovm.Command.MOD)
             stop_flag = oscan.lex not in [oscan.Lex.Mult, oscan.Lex.DIV, oscan.Lex.MOD]
     return t
 

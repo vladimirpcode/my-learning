@@ -5,8 +5,8 @@ class Command(Enum):
     Add = -2
     Sub = -3
     Mult = -4
-    Div = -5
-    Mod = -6
+    DIV = -5
+    MOD = -6
     Neg = -7
     Load = -8
     Save = -9
@@ -53,10 +53,10 @@ def run():
                 case Command.Mult.value:
                     SP += 1
                     memory[SP] = memory[SP] * memory[SP-1]
-                case Command.Div.value:
+                case Command.DIV.value:
                     SP += 1
                     memory[SP] = memory[SP] // memory[SP-1]
-                case Command.Mod.value:
+                case Command.MOD.value:
                     SP += 1
                     memory[SP] = memory[SP] % memory[SP-1]
                 case Command.Neg.value:

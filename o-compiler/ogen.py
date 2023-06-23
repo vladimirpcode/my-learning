@@ -35,3 +35,11 @@ def gen_min():
     gen(ovm.Command.Neg)
     gen(1)
     gen(ovm.Command.Sub)
+
+
+def gen_odd():
+    gen(2)
+    gen(ovm.Command.MOD)
+    gen(0)
+    gen(0)
+    gen(ovm.Command.IfEQ)
