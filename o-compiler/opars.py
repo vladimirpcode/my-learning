@@ -34,8 +34,7 @@ def module():
     check(oscan.Lex.MODULE, "MODULE")
     if oscan.lex != oscan.Lex.Name:
         expected("имя модуля")
-    else:
-        module_obj = otable.new_name(oscan.namem, otable.Category.Module)
+    module_obj = otable.new_name(oscan.name, otable.Category.Module)
     oscan.next_lex()
     check(oscan.Lex.Semi, "';'")
     if oscan.lex == oscan.Lex.IMPORT:
@@ -86,7 +85,7 @@ def decl_seq():
             oscan.next_lex()
             while oscan.lex == oscan.Lex.Name:
                 const_decl()
-                check(oscan.Lex.Semim, "';'")
+                check(oscan.Lex.Semi, "';'")
         else:
             oscan.next_lex()  # VAR
             while oscan.lex == oscan.Lex.Name:
@@ -184,14 +183,17 @@ def statement():
 
 # ПростоеВыраж [Отношение ПростоеВыраж]
 def expression() -> otable.OType:
+    operation = oscan.Lex.lexNone
     t = simple_expr()
     if oscan.lex in [oscan.Lex.EQ, oscan.Lex.NE, oscan.Lex.GT, oscan.Lex.GE, oscan.Lex.LT, oscan.Lex.LE]:
+        operation = oscan.lex
         if t != otable.OType.Int:
             error("несоответствие типу операнда")
         oscan.next_lex()
         t = simple_expr()
         if t != otable.OType.Int:
             expected("выражение целого типа")
+        ogen.gen_comp(operation)
         t = otable.OType.Bool
     return t
 
@@ -206,7 +208,7 @@ def simple_expr() -> otable.OType:
         if t != otable.OType.Int:
             expected("выражение целого типа")
         if operation == oscan.Lex.Minus:
-            ogen.gen(ovm.Command.Neg)
+            ogen.gen(ovm.Command.Neg.value)
     else:
         t = term()
     if oscan.lex in [oscan.Lex.Plus, oscan.Lex.Minus]:
@@ -221,8 +223,8 @@ def simple_expr() -> otable.OType:
             if t != otable.OType.Int:
                 expected("выражение целого типа")
             match operation:
-                case oscan.Lex.Plus: ogen.gen(ovm.Command.Add)
-                case oscan.Lex.Minus: ogen.gen(ovm.Command.Sub)
+                case oscan.Lex.Plus: ogen.gen(ovm.Command.Add.value)
+                case oscan.Lex.Minus: ogen.gen(ovm.Command.Sub.value)
             stop_flag = oscan.lex not in [oscan.Lex.Plus, oscan.Lex.Minus]
     return t
 
@@ -241,9 +243,9 @@ def term() -> otable.OType:  # слагаемое
             if t != otable.OType.Int:
                 expected("выражение целого типа")
             match operation:
-                case oscan.Lex.Mult: ogen.gen(ovm.Command.Mult)
-                case oscan.Lex.DIV: ogen.gen(ovm.Command.DIV)
-                case oscan.Lex.MOD: ogen.gen(ovm.Command.MOD)
+                case oscan.Lex.Mult: ogen.gen(ovm.Command.Mult.value)
+                case oscan.Lex.DIV: ogen.gen(ovm.Command.DIV.value)
+                case oscan.Lex.MOD: ogen.gen(ovm.Command.MOD.value)
             stop_flag = oscan.lex not in [oscan.Lex.Mult, oscan.Lex.DIV, oscan.Lex.MOD]
     return t
 
@@ -255,7 +257,7 @@ def factor() -> otable.OType:
         program_obj = otable.find(oscan.name)
         if program_obj.category == otable.Category.Var:
             ogen.gen_addr(program_obj)
-            ogen.gen(ogen.Command.Load)
+            ogen.gen(ovm.Command.Load.value)
             result_type = program_obj.type
             oscan.next_lex()
         elif program_obj.category == otable.Category.Const:
@@ -276,7 +278,7 @@ def factor() -> otable.OType:
     elif oscan.lex == oscan.Lex.LPar:
         oscan.next_lex()
         result_type = expression()
-        check(oscan.Lex.RParm, "')'")
+        check(oscan.Lex.RPar, "')'")
     else:
         expected("имя, число или '('")
     return result_type
@@ -311,8 +313,28 @@ def standart_func(value:otable.Function)->otable.OType:
             result_type = otable.OType.Int
         case otable.Function.ODD:
             int_expressipon()
-            ogen.gen_odd
+            ogen.gen_odd()
             result_type = otable.OType.Bool
     return result_type
 
 
+def ass_statement():
+    variable()
+    if oscan.lex == oscan.Lex.Ass:
+        oscan.next_lex()
+        int_expressipon()
+        ogen.gen(ovm.Command.Save)
+    else:
+        expected("':='")
+
+
+def variable():
+    program_obj = otable.ProgramObject()
+    if oscan.lex != oscan.Lex.Name:
+        expected("имя")
+    else:
+        program_obj = otable.find(oscan.name)
+        if program_obj.category != otable.Category.Var:
+            expected("имя переменной")
+        ogen.gen_addr(program_obj)
+        oscan.next_lex()
