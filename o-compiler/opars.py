@@ -51,6 +51,9 @@ def module():
     else:
         oscan.next_lex()
     check(oscan.Lex.Dot, "'.'")
+    ogen.gen(0)
+    ogen.gen(ovm.Command.Stop.value)
+    ogen.allocate_variables()
 
 
 def parse_import():
@@ -170,10 +173,10 @@ def statement():
                 program_obj = otable.find(program_obj.name + "." + oscan.name)
             else:
                 expected(f"имя из модуля {program_obj.name}")
-        elif program_obj.category == otable.Category.Var:
+        if program_obj.category == otable.Category.Var:
             ass_statement()
         elif program_obj.category == otable.Category.StandartProc and program_obj.type == otable.OType.TypeNone:
-            call_statement()
+            call_statement(program_obj.value)
         else:
             expected("обозначение переменной или процедуры")
     elif oscan.lex == oscan.Lex.IF:
@@ -256,7 +259,7 @@ def factor() -> otable.OType:
     if oscan.lex == oscan.Lex.Name:
         program_obj = otable.find(oscan.name)
         if program_obj.category == otable.Category.Var:
-            ogen.gen_addr(program_obj)
+            program_obj = ogen.gen_addr(program_obj)
             ogen.gen(ovm.Command.Load.value)
             result_type = program_obj.type
             oscan.next_lex()
@@ -323,7 +326,7 @@ def ass_statement():
     if oscan.lex == oscan.Lex.Ass:
         oscan.next_lex()
         int_expressipon()
-        ogen.gen(ovm.Command.Save)
+        ogen.gen(ovm.Command.Save.value)
     else:
         expected("':='")
 
@@ -336,5 +339,123 @@ def variable():
         program_obj = otable.find(oscan.name)
         if program_obj.category != otable.Category.Var:
             expected("имя переменной")
-        ogen.gen_addr(program_obj)
+        program_obj = ogen.gen_addr(program_obj)
         oscan.next_lex()
+
+
+def call_statement(proc:otable.Function):
+    check(oscan.Lex.Name, "имя процедуры")
+    if oscan.lex == oscan.Lex.LPar:
+        oscan.next_lex()
+        standart_proc(proc)
+        check(oscan.Lex.RPar, "')'")
+    elif proc in [otable.Function.OutLn, otable.Function.InOpen]:
+        standart_proc(proc)
+    else:
+        expected("'('")
+
+
+def standart_proc(proc:otable.Function):
+    match proc:
+        case otable.Function.DEC:
+            variable()
+            ogen.gen(ovm.Command.Dup.value)
+            ogen.gen(ovm.Command.Load.value)
+            if oscan.lex == oscan.Lex.Comma:
+                oscan.next_lex()
+                int_expressipon()
+            else:
+                ogen.gen(1)
+            ogen.gen(ovm.Command.Sub.value)
+            ogen.gen(ovm.Command.Save.value)
+        case otable.Function.INC:
+            variable()
+            ogen.gen(ovm.Command.Dup.value)
+            ogen.gen(ovm.Command.Load.value)
+            if oscan.lex == oscan.Lex.Comma:
+                oscan.next_lex()
+                int_expressipon()
+            else:
+                ogen.gen(1)
+            ogen.gen(ovm.Command.Add.value)
+            ogen.gen(ovm.Command.Save.value)
+        case otable.Function.InOpen: pass
+        case otable.Function.InInt:
+            variable()
+            ogen.gen(ovm.Command.In.value)
+            ogen.gen(ovm.Command.Save.value)
+        case otable.Function.OutInt:
+            int_expressipon()
+            check(oscan.Lex.Comma, "','")
+            int_expressipon()
+            ogen.gen(ovm.Command.Out.value)
+        case otable.Function.OutLn:
+            ogen.gen(ovm.Command.OutLn.value)
+        case otable.Function.HALT:
+            c = const_expr()
+            ogen.gen_const(c)
+            ogen.gen(ovm.Command.Stop.value)
+
+
+def while_statement():
+    while_PC = 0
+    cond_PC = 0
+    while_PC = ogen.PC
+    check(oscan.Lex.WHILE, "WHILE")
+    bool_expression()
+    cond_PC = ogen.PC
+    check(oscan.Lex.DO, "DO")
+    stat_seq()
+    check(oscan.Lex.END, "END")
+    ogen.gen(while_PC)
+    ogen.gen(ovm.Command.GOTO.value)
+    ogen.fixup(cond_PC)
+
+
+def if_statement():
+    cond_PC = 0
+    last_GOTO = 0
+    check(oscan.Lex.IF, "IF")
+    last_GOTO = 0
+    bool_expression()
+    cond_PC = ogen.PC
+    check(oscan.Lex.THEN, "THEN")
+    stat_seq()
+    while oscan.lex == oscan.Lex.ELSIF:
+        ogen.gen(last_GOTO)
+        ogen.gen(ovm.Command.GOTO.value)
+        last_GOTO = ogen.PC
+        oscan.next_lex()
+        ogen.fixup(cond_PC)
+        bool_expression()
+        cond_PC = ogen.PC
+        check(oscan.Lex.THEN, "THEN")
+        stat_seq()
+    if oscan.lex == oscan.Lex.ELSE:
+        ogen.gen(last_GOTO)
+        ogen.gen(ovm.Command.GOTO.value)
+        last_GOTO = ogen.PC
+        oscan.next_lex()
+        ogen.fixup(cond_PC)
+        stat_seq()
+    else:
+        ogen.fixup(cond_PC)
+    check(oscan.Lex.END, "END")
+    ogen.fixup(last_GOTO)
+
+
+def parse_type():
+    program_obj = otable.ProgramObject()
+    if oscan.lex != oscan.Lex.Name:
+        expected("имя")
+    else:
+        program_obj = otable.find(oscan.name)
+        if program_obj.category != otable.Category.catType:
+            expected("имя типа")
+        elif program_obj.type != otable.OType.Int:
+            expected("целый тип")
+        oscan.next_lex()
+
+
+
+

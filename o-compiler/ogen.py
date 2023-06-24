@@ -1,5 +1,7 @@
+import otable
 import ovm
 import oscan
+from oerror import *
 
 PC = 0
 
@@ -54,3 +56,30 @@ def gen_comp(operation:oscan.Lex):
         case oscan.Lex.LT: gen(ovm.Command.IfGE.value)
         case oscan.Lex.LE: gen(ovm.Command.IfGT.value)
         case oscan.Lex.LT: gen(ovm.Command.IfGE.value)
+
+
+def fixup(addr:int):
+    temp = 0
+    while addr > 0:
+        temp = ovm.memory[addr-2]
+        ovm.memory[addr-2] = PC
+        addr = temp
+
+
+def gen_addr(program_object:otable.ProgramObject)->otable.ProgramObject:
+    global PC
+    gen(program_object.value)
+    program_object.value = PC + 1
+    return program_object
+
+
+def allocate_variables():
+    global PC
+    program_obj = otable.first_var()
+    while program_obj != None:
+        if program_obj.value == 0:
+            warning(f"переменная {program_obj.name} не используется")
+        else:
+            fixup(program_obj.value)
+            PC += 1
+        program_obj = otable.next_var()

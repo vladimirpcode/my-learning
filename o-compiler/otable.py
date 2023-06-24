@@ -1,6 +1,7 @@
 from enum import Enum
 from oerror import *
 
+
 class OType(Enum):
     TypeNone = 0
     Int = 1
@@ -34,17 +35,19 @@ class Function(Enum):
 
 class ProgramObject:
     def __init__(self):
-        self.name = ""                      # ключ поиска
-        self.category = Category.Unknown    # категория имени
-        self.type = OType.TypeNone          # тип
-        self.value = None                   # значение
+        self.name = ""  # ключ поиска
+        self.category = Category.Unknown  # категория имени
+        self.type = OType.TypeNone  # тип
+        self.value = None  # значение
 
 
 # таблица имен, точнее стек =)
 program_objects = []
+current_objet = ProgramObject()
+current_objet_index = 0
 
 
-def enter(name:str, category:Category, type:OType, value):
+def enter(name: str, category: Category, type: OType, value):
     global program_objects
     program_object = ProgramObject()
     program_object.name = name
@@ -54,11 +57,11 @@ def enter(name:str, category:Category, type:OType, value):
     program_objects.append(program_object)
 
 
-def new_name(name:str, category:Category)->ProgramObject:
+def new_name(name: str, category: Category) -> ProgramObject:
     global program_objects
     index = -1
     while program_objects[index].category != Category.Guard and \
-          program_objects[index].name != name:
+            program_objects[index].name != name:
         index -= 1
     if program_objects[index].category == Category.Guard:
         obj = ProgramObject()
@@ -66,11 +69,12 @@ def new_name(name:str, category:Category)->ProgramObject:
         obj.category = category
         obj.value = 0
         program_objects.append(obj)
+        return obj
     else:
         error("повтороное объявление имени")
 
 
-def find(name:str)->ProgramObject:
+def find(name: str) -> ProgramObject:
     global program_objects
     index = -1
     while program_objects[index].name != name:
@@ -81,7 +85,7 @@ def find(name:str)->ProgramObject:
 
 
 def open_scope():
-    enter("", Category.Guardm, OType.TypeNone, 0)
+    enter("", Category.Guard, OType.TypeNone, 0)
 
 
 def close_scope():
@@ -89,3 +93,25 @@ def close_scope():
     while program_objects[-1].category != Category.Guard:
         program_objects.pop()
 
+
+def first_var() -> ProgramObject:
+    global current_objet
+    global current_objet_index
+    current_objet = program_objects[-1]
+    current_objet_index = -1
+    return next_var()
+
+
+def next_var() -> ProgramObject:
+    global current_objet
+    global current_objet_index
+    while current_objet != program_objects[0] and current_objet.category != Category.Var:
+        current_objet = program_objects[current_objet_index - 1]
+        current_objet_index -= 1
+    if current_objet == program_objects[0]:
+        return None
+    else:
+        result = current_objet
+        current_objet = program_objects[current_objet_index - 1]
+        current_objet_index -= 1
+    return result

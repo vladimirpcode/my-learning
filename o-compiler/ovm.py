@@ -37,7 +37,9 @@ def run():
     SP = MEM_SIZE   # стек пуст
     PC = 0
     cmd = memory[PC]
+    iter = 0
     while cmd != Command.Stop.value:
+        iter += 1
         PC += 1
         if cmd >= 0:
             SP = SP - 1
@@ -115,9 +117,9 @@ def run():
                 case Command.OutLn.value:
                     print()
                 case _:
-                    print("Недопустимый код операции")
+                    print(f"Недопустимый код операции {cmd}")
                     memory[PC] = Command.Stop.value
-            cmd = memory[PC]
+        cmd = memory[PC]
     print()
     if SP < MEM_SIZE:
         print(f"код возврата {memory[SP]}")
