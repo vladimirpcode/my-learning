@@ -19,7 +19,8 @@ BEGIN
         END;
         IF d = i THEN (* i - простое *)
             INC(c);
-            Out.Int(d, 8)
+            Out.Int(d, 8);
+            Out.Ln;
         END;
         INC(i);
     END;

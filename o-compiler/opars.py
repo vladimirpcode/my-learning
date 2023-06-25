@@ -184,6 +184,7 @@ def statement():
     elif oscan.lex == oscan.Lex.WHILE:
         while_statement()
 
+
 # ПростоеВыраж [Отношение ПростоеВыраж]
 def expression() -> otable.OType:
     operation = oscan.Lex.lexNone

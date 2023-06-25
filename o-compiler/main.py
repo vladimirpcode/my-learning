@@ -6,7 +6,7 @@ import ogen
 
 
 def init():
-    otext.reset_text("o-code-files/primes.o")
+    otext.reset_text("o-code-files/1.o")
     oscan.init_scan()
     ogen.init()
 

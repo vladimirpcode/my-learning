@@ -1,0 +1,18 @@
+MODULE Sample;
+
+IMPORT In, Out;
+
+VAR
+    a,b: INTEGER;
+
+BEGIN
+    In.Open;
+    In.Int(a);
+    In.Int(b);
+    IF a > b THEN
+        Out.Int(a,8)
+    ELSE
+        Out.Int(b,8)
+    END;
+    Out.Int(a+b,8);
+END Sample.

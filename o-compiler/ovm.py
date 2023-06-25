@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Command(Enum):
     Stop = -1
     Add = -2
