@@ -414,8 +414,6 @@ def while_statement():
 
 
 def if_statement():
-    cond_PC = 0
-    last_GOTO = 0
     check(oscan.Lex.IF, "IF")
     last_GOTO = 0
     bool_expression()

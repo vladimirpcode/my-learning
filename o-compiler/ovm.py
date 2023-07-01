@@ -124,3 +124,17 @@ def run():
     print()
     if SP < MEM_SIZE:
         print(f"код возврата {memory[SP]}")
+
+
+# печатает память до команды STOP
+def print_program():
+    i = 0
+    while memory[i] != Command.Stop.value:
+        if memory[i] >= 0:
+            print(memory[i])
+        else:
+            for cmd in Command:
+                if cmd.value == memory[i]:
+                    print(cmd.name)
+                    break
+        i += 1

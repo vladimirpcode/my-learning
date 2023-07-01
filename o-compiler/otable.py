@@ -80,7 +80,7 @@ def find(name: str) -> ProgramObject:
     while program_objects[index].name != name:
         index -= 1
         if index == -(len(program_objects) + 1):
-            error("Необъявленное имя")
+            error(f"Необъявленное имя {name}")
     return program_objects[index]
 
 

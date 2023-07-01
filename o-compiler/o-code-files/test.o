@@ -1,0 +1,9 @@
+MODULE Test;
+
+IMPORT In, Out;
+
+BEGIN
+    IF 2 > 1 THEN
+        Out.Int(8,8);
+    END;
+END Test.

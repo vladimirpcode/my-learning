@@ -1,10 +1,10 @@
 def error(msg:str):
-    pass
+    print(f"ERROR: {msg}")
 
 
 def expected(msg:str):
-    pass
+    print(f"EXPECTED: {msg}")
 
 
 def warning(msg:str):
-    pass
+    print(f"WARNING: {msg}")
