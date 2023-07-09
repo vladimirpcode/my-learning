@@ -6,7 +6,7 @@ import ogen
 
 
 def init():
-    otext.reset_text("o-code-files/test.o")
+    otext.reset_text("o-code-files/euqlid.o")
     oscan.init_scan()
     ogen.init()
 

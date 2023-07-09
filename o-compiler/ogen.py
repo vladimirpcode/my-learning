@@ -54,8 +54,8 @@ def gen_comp(operation:oscan.Lex):
         case oscan.Lex.NE: gen(ovm.Command.IfEQ.value)
         case oscan.Lex.LE: gen(ovm.Command.IfGT.value)
         case oscan.Lex.LT: gen(ovm.Command.IfGE.value)
-        case oscan.Lex.LE: gen(ovm.Command.IfGT.value)
-        case oscan.Lex.LT: gen(ovm.Command.IfGE.value)
+        case oscan.Lex.GE: gen(ovm.Command.IfLT.value)
+        case oscan.Lex.GT: gen(ovm.Command.IfLE.value)
 
 
 def fixup(addr:int):

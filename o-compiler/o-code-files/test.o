@@ -1,9 +1,18 @@
 MODULE Test;
 
 IMPORT In, Out;
-
+VAR
+    a : INTEGER;
+    b: INTEGER;
 BEGIN
-    IF 2 > 1 THEN
+    In.Open;
+    In.Int(a);
+    In.Int(b);
+    IF a > b THEN
         Out.Int(8,8);
-    END;
+    ELSIF a < b THEN
+        Out.Int(9,8);
+    ELSE
+        Out.Int(0,8);
+    END
 END Test.

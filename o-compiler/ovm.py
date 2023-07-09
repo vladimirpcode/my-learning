@@ -113,7 +113,7 @@ def run():
                     print("?")
                     memory[SP] = int(input())
                 case Command.Out.value:
-                    print(str(memory[SP+1]).ljust(memory[SP]), end="")
+                    print("> " + str(memory[SP+1]).ljust(memory[SP]), end="")
                     SP += 2
                 case Command.OutLn.value:
                     print()
@@ -131,10 +131,10 @@ def print_program():
     i = 0
     while memory[i] != Command.Stop.value:
         if memory[i] >= 0:
-            print(memory[i])
+            print(f"{i}: {memory[i]}")
         else:
             for cmd in Command:
                 if cmd.value == memory[i]:
-                    print(cmd.name)
+                    print(f"{i}: {cmd.name}")
                     break
         i += 1
