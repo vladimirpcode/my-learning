@@ -96,5 +96,21 @@ int main(){
     // if (DWORD exit_code; GetExitCodeProcess(process_handle, &exit_code)) {
     //      std::cout << "Exit code of process was: " << exit_code << '\n';
     // }
+    
+    //Новые правила инициализатора с фигурными скобками
+    int x1 = 1;
+    int x2 {1};
+    int x3 (1);
+    std::vector<int> v1 {1,2,3};
+    std::vector<int> v2 = {1,2,3};
+    std::vector v3 (10, 20);  // вектор, содержащий десять переменных со значением 20
+    // auto + {}
+    auto v {1}; //int
+    //auto w {1, 2};  //ошибка, теперь инициализация только одиночными элемнетами
+    auto x = {1};           // x имеет тип std::initializer_list<int>
+    auto y = {1,2};         // y имеет тип std::initializer_list<int>
+    auto z = {1, 2, 3.0};   // ошибка, нельзя определить тип элемента
+    
+    
     return 0;
 }
