@@ -25,6 +25,15 @@ class Command(Enum):
     In = -21
     Out = -22
     OutLn = -23
+    Call = -24
+    Ret = -25
+    Enter = -26
+    Leave = -27
+    Getbp = -28
+    Setbp = -29
+    Lload = -30
+    Lsave = -31
+    Sp = -32
 
 
 MEM_SIZE = 8 * 1024
@@ -36,6 +45,7 @@ def run():
     global memory
     global MEM_SIZE
     SP = MEM_SIZE   # стек пуст
+    BP = MEM_SIZE
     PC = 0
     cmd = memory[PC]
     iter = 0
@@ -117,6 +127,25 @@ def run():
                     SP += 2
                 case Command.OutLn.value:
                     print()
+                case Command.Call.value:
+                    pass
+                case Command.Ret.value:
+                    pass
+                case Command.Enter.value:
+                    pass
+                case Command.Leave.value:
+                    pass
+                case Command.Getbp.value:
+                    pass
+                case Command.Setbp.value:
+                    pass
+                case Command.Lload.value:
+                    pass
+                case Command.Lsave.value:
+                    pass
+                case Command.Sp.value:
+                    pass
+
                 case _:
                     print(f"Недопустимый код операции {cmd}")
                     memory[PC] = Command.Stop.value

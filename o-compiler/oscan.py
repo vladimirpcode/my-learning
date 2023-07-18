@@ -37,6 +37,7 @@ class Lex(Enum):
     Ass = 31
     LPar = 32
     RPar = 33
+    Procedure = 41
     EOT = 34
 
 

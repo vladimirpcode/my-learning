@@ -1,0 +1,24 @@
+MODULE Test;
+
+IMPORT In, Out;
+VAR
+    a : INTEGER;
+    b: INTEGER;
+
+PROCEDURE Test;
+BEGIN
+    Out.Int(101);
+END Test;
+
+BEGIN
+    In.Open;
+    In.Int(a);
+    In.Int(b);
+    IF a > b THEN
+        Out.Int(8,8);
+    ELSIF a < b THEN
+        Out.Int(9,8);
+    ELSE
+        Out.Int(0,8);
+    END
+END Test.
