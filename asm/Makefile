@@ -61,6 +61,28 @@ memory.o: memory.asm
 memory-clean: 
 	-rm memory.lst memory.o memory
 
+icalc:icalc.o
+	gcc -o icalc icalc.o -no-pie
+icalc.o: icalc.asm
+	nasm -f elf64 -g -F dwarf icalc.asm -l icalc.lst
+icalc-clean: 
+	-rm icalc.lst icalc.o icalc
+
+stack:stack.o
+	gcc -o stack stack.o -no-pie
+stack.o: stack.asm
+	nasm -f elf64 -g -F dwarf stack.asm -l stack.lst
+stack-clean: 
+	-rm stack.lst stack.o stack
+
+fcalc:fcalc.o
+	gcc -o fcalc fcalc.o -no-pie
+fcalc.o: fcalc.asm
+	nasm -f elf64 -g -F dwarf fcalc.asm -l fcalc.lst
+fcalc-clean: 
+	-rm fcalc.lst fcalc.o fcalc
+
 clean: 	hello-clean hello2-clean alive-clean hello4-clean \
 		alive2-clean jump-clean jumploop-clean \
-		betterloop-clean memory-clean \
+		betterloop-clean memory-clean icalc-clean \
+		stack-clean fcalc-clean \
