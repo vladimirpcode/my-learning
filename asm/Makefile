@@ -82,7 +82,29 @@ fcalc.o: fcalc.asm
 fcalc-clean: 
 	-rm fcalc.lst fcalc.o fcalc
 
+function:function.o
+	gcc -o function function.o -no-pie
+function.o: function.asm
+	nasm -f elf64 -g -F dwarf function.asm -l function.lst
+function-clean: 
+	-rm function.lst function.o function
+
+function2:function2.o
+	gcc -o function2 function2.o -no-pie
+function2.o: function2.asm
+	nasm -f elf64 -g -F dwarf function2.asm -l function2.lst
+function2-clean: 
+	-rm function2.lst function2.o function2
+
+aligned:aligned.o
+	gcc -o aligned aligned.o -no-pie
+aligned.o: aligned.asm
+	nasm -f elf64 -g -F dwarf aligned.asm -l aligned.lst
+aligned-clean: 
+	-rm aligned.lst aligned.o aligned
+
 clean: 	hello-clean hello2-clean alive-clean hello4-clean \
 		alive2-clean jump-clean jumploop-clean \
 		betterloop-clean memory-clean icalc-clean \
-		stack-clean fcalc-clean \
+		stack-clean fcalc-clean function-clean \
+		function2-clean aligned-clean \
