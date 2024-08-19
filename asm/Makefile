@@ -144,11 +144,40 @@ bits2.o: bits2.asm
 bits2-clean:
 	-rm bits2.o printb.o bits2.lst bits2
 
+bits3: bits3.o printb.o
+	gcc -g -o bits3 bits3.o printb.o -no-pie
+bits3.o: bits3.asm
+	nasm -f elf64 -g -F dwarf bits3.asm -l bits3.lst
+bits3-clean:
+	-rm bits3.o printb.o bits3.lst bits3
+
+macro: macro.o
+	gcc -o macro macro.o -no-pie
+macro.o: macro.asm
+	nasm -f elf64 -g -F dwarf macro.asm -l macro.lst
+macro-clean: 
+	-rm macro.lst macro.o macro
+
+console1: console1.o
+	gcc -o console1 console1.o -no-pie
+console1.o: console1.asm
+	nasm -f elf64 -g -F dwarf console1.asm -l console1.lst
+console1-clean: 
+	-rm console1.lst console1.o console1
+
+console2: console2.o
+	gcc -o console2 console2.o -no-pie
+console2.o: console2.asm
+	nasm -f elf64 -g -F dwarf console2.asm -l console2.lst
+console2-clean: 
+	-rm console2.lst console2.o console2
+
 clean: 	hello-clean hello2-clean alive-clean hello4-clean \
 		alive2-clean jump-clean jumploop-clean \
 		betterloop-clean memory-clean icalc-clean \
 		stack-clean fcalc-clean function-clean \
 		function2-clean aligned-clean function4-clean \
 		function5-clean function6-clean bits1-clean \
-		bits2-clean
+		bits2-clean bits3-clean macro-clean console1-clean \
+		console2-clean
 

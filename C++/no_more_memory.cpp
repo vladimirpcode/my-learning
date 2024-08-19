@@ -1,8 +1,6 @@
 #include <iostream>
 
 void noMoreMemory(){
-    std::cout << "bad alloc\n";
-    abort();
 }
 
 int main(){
