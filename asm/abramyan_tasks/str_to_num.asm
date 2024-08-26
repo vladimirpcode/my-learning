@@ -1,13 +1,30 @@
 ; begin1.asm
 section .data
-    my_str  db  "14578.321",0
+    float_str   db  "14578.321",0
+    int_str     db  "578",0
     fmt_str db  "%f",10,0
 section .bss
+
 section .text
     global input_int
     global input_double
     global str_to_double
     global str_to_int
+main:
+    section .data
+        .inputlen    equ 50  ; длина буфера ввода
+    section .bss
+        .input resb .inputlen+1   ; for /0
+    section .text
+        push rbp
+        mov rbp, rsp
+        mov rdi, .input
+        mov rsi, .inputlen
+        call reads
+        mov rdi, .input
+        mov rsi, .inputlen
+        leave
+        ret
 str_to_int:
     push rbp
     mov rbp, rsp
@@ -164,16 +181,12 @@ reads:
         .readc:
             mov rax, 0  ; read
             mov rdi, 1  ; stdin
-            lea rsi, [.inputchar]   ; куда
+            lea rsi, .inputchar   ; куда
             mov rdx, 1              ; сколько
             syscall
             mov al, [.inputchar]    ; Введен символ NL (0xa)?
             cmp al, byte[.NL]
             je .done
-            cmp al, 97  ; char < 'a'
-            jl .readc   ; отбросить символ
-            cmp al, 122 ; char > 'z'
-            jg .readc   ; отбросить символ
             inc r14     ; увеличить счетчик символов
             cmp r14, r13
             ja .readc   ; максимальное заполнение буфера, отбросить лишнее

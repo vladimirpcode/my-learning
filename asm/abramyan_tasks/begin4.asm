@@ -1,9 +1,10 @@
-; begin1.asm
+; begin4.asm
 extern input_double
 extern printf
 section .data
-    enter_msg   db  "a = ",10,0
-    result_msg  db  "P = %f",10,0
+    enter_msg   db  "d = ",10,0
+    result_msg  db  "L = %f",10,0
+    pi dq 3.14
 section .bss
 section .text
     global main
@@ -13,10 +14,8 @@ main:
     mov rdi, enter_msg
     mov rax, 0
     call printf
-    mov rax, 4
-    cvtsi2sd xmm8, rax
     call input_double
-    mulsd xmm0, xmm8
+    mulsd xmm0, [pi]
     mov rdi, result_msg
     mov rax, 1
     call printf

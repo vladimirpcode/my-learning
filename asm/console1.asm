@@ -22,7 +22,7 @@ main:
     call prints
     mov rsi, input      ; адрес буфера ввода
     mov rdx, inputlen   ; длина буфера ввода
-    call  reads         ; ожидание ввода
+    call reads         ; ожидание ввода
     mov rsi, msg3
     mov rdx, msg3len
     call prints
