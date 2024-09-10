@@ -3,6 +3,11 @@ str_to_num.o: str_to_num.asm
 str_to_num-clean: 
 	-rm str_to_num.o 
 
+math.o: math.asm
+	nasm -f elf64 -g -F dwarf math.asm
+math-clean: 
+	-rm math.o 
+
 begin1: begin1.o str_to_num.o
 	gcc -o begin1 begin1.o str_to_num.o -no-pie
 begin1.o: begin1.asm
@@ -157,9 +162,66 @@ begin22.o: begin22.asm
 begin22-clean: 
 	-rm begin22.lst begin22.o begin22
 
-clean: str_to_num-clean begin1-clean begin2-clean begin3-clean \
+begin23: begin23.o str_to_num.o
+	gcc -o begin23 begin23.o str_to_num.o -no-pie
+begin23.o: begin23.asm
+	nasm -f elf64 -g -F dwarf begin23.asm -l begin23.lst
+begin23-clean: 
+	-rm begin23.lst begin23.o begin23
+
+begin24: begin24.o str_to_num.o
+	gcc -o begin24 begin24.o str_to_num.o -no-pie
+begin24.o: begin24.asm
+	nasm -f elf64 -g -F dwarf begin24.asm -l begin24.lst
+begin24-clean: 
+	-rm begin24.lst begin24.o begin24
+
+begin25: begin25.o str_to_num.o math.o
+	gcc -o begin25 begin25.o str_to_num.o math.o -no-pie
+begin25.o: begin25.asm
+	nasm -f elf64 -g -F dwarf begin25.asm -l begin25.lst
+begin25-clean: 
+	-rm begin25.lst begin25.o begin25
+
+begin26: begin26.o str_to_num.o math.o
+	gcc -o begin26 begin26.o str_to_num.o math.o -no-pie
+begin26.o: begin26.asm
+	nasm -f elf64 -g -F dwarf begin26.asm -l begin26.lst
+begin26-clean: 
+	-rm begin26.lst begin26.o begin26
+
+begin27: begin27.o str_to_num.o math.o
+	gcc -o begin27 begin27.o str_to_num.o math.o -no-pie
+begin27.o: begin27.asm
+	nasm -f elf64 -g -F dwarf begin27.asm -l begin27.lst
+begin27-clean: 
+	-rm begin27.lst begin27.o begin27
+
+begin28: begin28.o str_to_num.o math.o
+	gcc -o begin28 begin28.o str_to_num.o math.o -no-pie
+begin28.o: begin28.asm
+	nasm -f elf64 -g -F dwarf begin28.asm -l begin28.lst
+begin28-clean: 
+	-rm begin28.lst begin28.o begin28
+
+begin29: begin29.o str_to_num.o math.o
+	gcc -o begin29 begin29.o str_to_num.o math.o -no-pie
+begin29.o: begin29.asm
+	nasm -f elf64 -g -F dwarf begin29.asm -l begin29.lst
+begin29-clean: 
+	-rm begin29.lst begin29.o begin29
+
+begin30: begin30.o str_to_num.o math.o
+	gcc -o begin30 begin30.o str_to_num.o math.o -no-pie
+begin30.o: begin30.asm
+	nasm -f elf64 -g -F dwarf begin30.asm -l begin30.lst
+begin30-clean: 
+	-rm begin30.lst begin30.o begin30
+
+clean: str_to_num-clean math-clean begin1-clean begin2-clean begin3-clean \
 	begin4-clean begin5-clean begin6-clean begin7-clean begin8-clean \
 	begin9-clean begin10-clean begin11-clean begin12-clean begin13-clean \
 	begin14-clean begin15-clean begin16-clean begin17-clean \
 	begin18-clean begin19-clean begin20-clean begin21-clean begin22-clean \
-	
+	begin23-clean begin24-clean begin25-clean begin26-clean begin27-clean \
+	begin28-clean begin29-clean begin30-clean
