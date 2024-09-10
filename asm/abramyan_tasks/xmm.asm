@@ -15,3 +15,10 @@
         mov rax, %2
         cvtsi2sd %1, rax
 %endmacro
+
+%macro abs_xmm_via_xmm0 1
+    section .text
+        pcmpeqd xmm0, xmm0      ; 0xff...
+        psrld xmm0, 1           ; 0x7fff
+        andps %1, xmm0
+%endmacro

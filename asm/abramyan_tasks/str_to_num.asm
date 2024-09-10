@@ -1,4 +1,5 @@
-; begin1.asm
+; str_to_num.asm
+%include "xmm.asm"
 section .data
     float_str   db  "14578.321",0
     int_str     db  "578",0
@@ -10,9 +11,12 @@ section .text
     global input_double
     global str_to_double
     global str_to_int
+    extern printf
+    ;global main
 main:
     section .data
         .inputlen    equ 50  ; длина буфера ввода
+        .msg db "result: %d",10,0
     section .bss
         .input resb .inputlen+1   ; for /0
     section .text
@@ -23,16 +27,31 @@ main:
         call reads
         mov rdi, .input
         mov rsi, .inputlen
+        call str_to_int
+        mov rsi, rax
+        mov rdi, .msg
+        mov rax, 0
+        call printf
         leave
         ret
+
+; str_to_int(rdi)->rax
 str_to_int:
     push rbp
     mov rbp, rsp
     push r12
     push r13   
+    push r14
     mov r12, rdi    ; указатель на строку
     mov r13, 0      ; целая часть
-    cmp r12, 0
+    mov r14, 1      ; множитель для отрицательных чисел
+    .ifminus:
+        cmp byte[r12], 45                   ; byte[r12] == '-'
+        jne .endifminus
+        inc r12
+        mov r14, -1
+    .endifminus:
+    cmp byte[r12], 0
     je .incorect_number
     .int_loop:
         mov rax, 10
@@ -50,6 +69,8 @@ str_to_int:
         cmp byte[r12], 0
         jne .int_loop
     mov rax, r13
+    imul rax, r14
+    pop r14
     pop r13
     pop r12
     jmp .return
@@ -58,6 +79,8 @@ str_to_int:
     .return:
     leave
     ret
+
+; str_to_double(rdi)->xmm0
 str_to_double:
     section .data
         .null dq 0.0
@@ -72,6 +95,13 @@ str_to_double:
     mov r13, 0      ; целая часть
     mov r14, 0      ; дробная часть
     mov r15, 1      ; на что потом поделить дробную часть
+    int_to_double_via_rax xmm11, 1      ; множитель (для отрицательных чисел)
+    .ifminus:
+        cmp byte[r12], 45                   ; byte[r12] == '-'
+        jne .endifminus
+        inc r12
+        int_to_double_via_rax xmm11, -1
+    .endifminus:
     cmp byte[r12], 48
     jl .incorect_number
     cmp byte[r12], 57
@@ -124,6 +154,7 @@ str_to_double:
     divsd xmm9, xmm10
     addsd xmm8, xmm9
     movsd xmm0, xmm8
+    mulsd xmm0, xmm11
     jmp .return
     .incorect_number:
     movsd xmm0, [.null]
@@ -194,7 +225,6 @@ reads:
             inc r12     ; переместить указатель на следующий символ в буфере
             jmp .readc
         .done:
-        inc r12
         mov byte [r12], 0
         pop r14
         pop r13
