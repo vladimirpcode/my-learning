@@ -17,6 +17,7 @@ main:
     section .data
         .inputlen    equ 50  ; длина буфера ввода
         .msg db "result: %d",10,0
+        .msg2 db "f: %f",10,0
     section .bss
         .input resb .inputlen+1   ; for /0
     section .text
@@ -31,6 +32,15 @@ main:
         mov rsi, rax
         mov rdi, .msg
         mov rax, 0
+        call printf
+        mov rdi, .input
+        mov rsi, .inputlen
+        call reads
+        mov rdi, .input
+        mov rsi, .inputlen
+        call str_to_double
+        mov rdi, .msg2
+        mov rax, 1
         call printf
         leave
         ret
@@ -118,7 +128,8 @@ str_to_double:
         cmp byte[r12], 48
         jl .end_int_loop
         cmp byte[r12], 57
-        jl .int_loop
+        jg .end_int_loop
+        jmp .int_loop
     .end_int_loop:
     .if_dot:
         cmp byte[r12], 46
