@@ -288,6 +288,218 @@ begin40.o: begin40.asm
 begin40-clean: 
 	-rm begin40.lst begin40.o begin40
 
+integer1: integer1.o str_to_num.o math.o
+	gcc -o integer1 integer1.o str_to_num.o math.o -no-pie
+integer1.o: integer1.asm
+	nasm -f elf64 -g -F dwarf integer1.asm -l integer1.lst
+integer1-clean: 
+	-rm integer1.lst integer1.o integer1
+
+integer2: integer2.o str_to_num.o math.o
+	gcc -o integer2 integer2.o str_to_num.o math.o -no-pie
+integer2.o: integer2.asm
+	nasm -f elf64 -g -F dwarf integer2.asm -l integer2.lst
+integer2-clean: 
+	-rm integer2.lst integer2.o integer2
+
+integer3: integer3.o str_to_num.o math.o
+	gcc -o integer3 integer3.o str_to_num.o math.o -no-pie
+integer3.o: integer3.asm
+	nasm -f elf64 -g -F dwarf integer3.asm -l integer3.lst
+integer3-clean: 
+	-rm integer3.lst integer3.o integer3
+
+integer4: integer4.o str_to_num.o math.o
+	gcc -o integer4 integer4.o str_to_num.o math.o -no-pie
+integer4.o: integer4.asm
+	nasm -f elf64 -g -F dwarf integer4.asm -l integer4.lst
+integer4-clean: 
+	-rm integer4.lst integer4.o integer4
+
+integer5: integer5.o str_to_num.o math.o
+	gcc -o integer5 integer5.o str_to_num.o math.o -no-pie
+integer5.o: integer5.asm
+	nasm -f elf64 -g -F dwarf integer5.asm -l integer5.lst
+integer5-clean: 
+	-rm integer5.lst integer5.o integer5
+
+integer6: integer6.o str_to_num.o math.o
+	gcc -o integer6 integer6.o str_to_num.o math.o -no-pie
+integer6.o: integer6.asm
+	nasm -f elf64 -g -F dwarf integer6.asm -l integer6.lst
+integer6-clean: 
+	-rm integer6.lst integer6.o integer6
+
+integer7: integer7.o str_to_num.o math.o
+	gcc -o integer7 integer7.o str_to_num.o math.o -no-pie
+integer7.o: integer7.asm
+	nasm -f elf64 -g -F dwarf integer7.asm -l integer7.lst
+integer7-clean: 
+	-rm integer7.lst integer7.o integer7
+
+integer8: integer8.o str_to_num.o math.o
+	gcc -o integer8 integer8.o str_to_num.o math.o -no-pie
+integer8.o: integer8.asm
+	nasm -f elf64 -g -F dwarf integer8.asm -l integer8.lst
+integer8-clean: 
+	-rm integer8.lst integer8.o integer8
+
+integer9: integer9.o str_to_num.o math.o
+	gcc -o integer9 integer9.o str_to_num.o math.o -no-pie
+integer9.o: integer9.asm
+	nasm -f elf64 -g -F dwarf integer9.asm -l integer9.lst
+integer9-clean: 
+	-rm integer9.lst integer9.o integer9
+
+integer10: integer10.o str_to_num.o math.o
+	gcc -o integer10 integer10.o str_to_num.o math.o -no-pie
+integer10.o: integer10.asm
+	nasm -f elf64 -g -F dwarf integer10.asm -l integer10.lst
+integer10-clean: 
+	-rm integer10.lst integer10.o integer10
+
+integer11: integer11.o str_to_num.o math.o
+	gcc -o integer11 integer11.o str_to_num.o math.o -no-pie
+integer11.o: integer11.asm
+	nasm -f elf64 -g -F dwarf integer11.asm -l integer11.lst
+integer11-clean: 
+	-rm integer11.lst integer11.o integer11
+
+integer12: integer12.o str_to_num.o math.o
+	gcc -o integer12 integer12.o str_to_num.o math.o -no-pie
+integer12.o: integer12.asm
+	nasm -f elf64 -g -F dwarf integer12.asm -l integer12.lst
+integer12-clean: 
+	-rm integer12.lst integer12.o integer12
+
+integer13: integer13.o str_to_num.o math.o
+	gcc -o integer13 integer13.o str_to_num.o math.o -no-pie
+integer13.o: integer13.asm
+	nasm -f elf64 -g -F dwarf integer13.asm -l integer13.lst
+integer13-clean: 
+	-rm integer13.lst integer13.o integer13
+
+integer14: integer14.o str_to_num.o math.o
+	gcc -o integer14 integer14.o str_to_num.o math.o -no-pie
+integer14.o: integer14.asm
+	nasm -f elf64 -g -F dwarf integer14.asm -l integer14.lst
+integer14-clean: 
+	-rm integer14.lst integer14.o integer14
+
+integer15: integer15.o str_to_num.o math.o
+	gcc -o integer15 integer15.o str_to_num.o math.o -no-pie
+integer15.o: integer15.asm
+	nasm -f elf64 -g -F dwarf integer15.asm -l integer15.lst
+integer15-clean: 
+	-rm integer15.lst integer15.o integer15
+
+integer16: integer16.o str_to_num.o math.o
+	gcc -o integer16 integer16.o str_to_num.o math.o -no-pie
+integer16.o: integer16.asm
+	nasm -f elf64 -g -F dwarf integer16.asm -l integer16.lst
+integer16-clean: 
+	-rm integer16.lst integer16.o integer16
+
+integer17: integer17.o str_to_num.o math.o
+	gcc -o integer17 integer17.o str_to_num.o math.o -no-pie
+integer17.o: integer17.asm
+	nasm -f elf64 -g -F dwarf integer17.asm -l integer17.lst
+integer17-clean: 
+	-rm integer17.lst integer17.o integer17
+
+integer18: integer18.o str_to_num.o math.o
+	gcc -o integer18 integer18.o str_to_num.o math.o -no-pie
+integer18.o: integer18.asm
+	nasm -f elf64 -g -F dwarf integer18.asm -l integer18.lst
+integer18-clean: 
+	-rm integer18.lst integer18.o integer18
+
+integer19: integer19.o str_to_num.o math.o
+	gcc -o integer19 integer19.o str_to_num.o math.o -no-pie
+integer19.o: integer19.asm
+	nasm -f elf64 -g -F dwarf integer19.asm -l integer19.lst
+integer19-clean: 
+	-rm integer19.lst integer19.o integer19
+
+integer20: integer20.o str_to_num.o math.o
+	gcc -o integer20 integer20.o str_to_num.o math.o -no-pie
+integer20.o: integer20.asm
+	nasm -f elf64 -g -F dwarf integer20.asm -l integer20.lst
+integer20-clean: 
+	-rm integer20.lst integer20.o integer20
+
+integer21: integer21.o str_to_num.o math.o
+	gcc -o integer21 integer21.o str_to_num.o math.o -no-pie
+integer21.o: integer21.asm
+	nasm -f elf64 -g -F dwarf integer21.asm -l integer21.lst
+integer21-clean: 
+	-rm integer21.lst integer21.o integer21
+
+integer22: integer22.o str_to_num.o math.o
+	gcc -o integer22 integer22.o str_to_num.o math.o -no-pie
+integer22.o: integer22.asm
+	nasm -f elf64 -g -F dwarf integer22.asm -l integer22.lst
+integer22-clean: 
+	-rm integer22.lst integer22.o integer22
+
+integer23: integer23.o str_to_num.o math.o
+	gcc -o integer23 integer23.o str_to_num.o math.o -no-pie
+integer23.o: integer23.asm
+	nasm -f elf64 -g -F dwarf integer23.asm -l integer23.lst
+integer23-clean: 
+	-rm integer23.lst integer23.o integer23
+
+integer24: integer24.o str_to_num.o math.o
+	gcc -o integer24 integer24.o str_to_num.o math.o -no-pie
+integer24.o: integer24.asm
+	nasm -f elf64 -g -F dwarf integer24.asm -l integer24.lst
+integer24-clean: 
+	-rm integer24.lst integer24.o integer24
+
+integer25: integer25.o str_to_num.o math.o
+	gcc -o integer25 integer25.o str_to_num.o math.o -no-pie
+integer25.o: integer25.asm
+	nasm -f elf64 -g -F dwarf integer25.asm -l integer25.lst
+integer25-clean: 
+	-rm integer25.lst integer25.o integer25
+
+integer26: integer26.o str_to_num.o math.o
+	gcc -o integer26 integer26.o str_to_num.o math.o -no-pie
+integer26.o: integer26.asm
+	nasm -f elf64 -g -F dwarf integer26.asm -l integer26.lst
+integer26-clean: 
+	-rm integer26.lst integer26.o integer26
+
+integer27: integer27.o str_to_num.o math.o
+	gcc -o integer27 integer27.o str_to_num.o math.o -no-pie
+integer27.o: integer27.asm
+	nasm -f elf64 -g -F dwarf integer27.asm -l integer27.lst
+integer27-clean: 
+	-rm integer27.lst integer27.o integer27
+
+integer28: integer28.o str_to_num.o math.o
+	gcc -o integer28 integer28.o str_to_num.o math.o -no-pie
+integer28.o: integer28.asm
+	nasm -f elf64 -g -F dwarf integer28.asm -l integer28.lst
+integer28-clean: 
+	-rm integer28.lst integer28.o integer28
+
+integer29: integer29.o str_to_num.o math.o
+	gcc -o integer29 integer29.o str_to_num.o math.o -no-pie
+integer29.o: integer29.asm
+	nasm -f elf64 -g -F dwarf integer29.asm -l integer29.lst
+integer29-clean: 
+	-rm integer29.lst integer29.o integer29
+
+
+integer30: integer30.o str_to_num.o math.o
+	gcc -o integer30 integer30.o str_to_num.o math.o -no-pie
+integer30.o: integer30.asm
+	nasm -f elf64 -g -F dwarf integer30.asm -l integer30.lst
+integer30-clean: 
+	-rm integer30.lst integer30.o integer30
+
+
 clean: str_to_num-clean math-clean begin1-clean begin2-clean begin3-clean \
 	begin4-clean begin5-clean begin6-clean begin7-clean begin8-clean \
 	begin9-clean begin10-clean begin11-clean begin12-clean begin13-clean \
@@ -296,4 +508,10 @@ clean: str_to_num-clean math-clean begin1-clean begin2-clean begin3-clean \
 	begin23-clean begin24-clean begin25-clean begin26-clean begin27-clean \
 	begin28-clean begin29-clean begin30-clean begin31-clean begin32-clean \
 	begin33-clean begin34-clean begin35-clean begin36-clean begin37-clean \
-	begin38-clean begin39-clean begin40-clean
+	begin38-clean begin39-clean begin40-clean integer1-clean integer2-clean \
+	integer3-clean integer4-clean integer5-clean integer6-clean integer7-clean \
+	integer8-clean integer9-clean integer10-clean integer11-clean integer12-clean \
+	integer13-clean integer14-clean integer15-clean integer16-clean integer17-clean \
+	integer18-clean integer19-clean integer20-clean integer21-clean integer22-clean \
+	integer23-clean integer24-clean integer25-clean integer26-clean integer27-clean \ 
+	integer28-clean integer29-clean integer30-clean
